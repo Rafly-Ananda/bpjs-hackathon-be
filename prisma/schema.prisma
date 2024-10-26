@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  name         String
+  age          Int
+  gender       String
+  email        String      @unique
+  phoneNumber  String
+  healthStatus String
+  doctorId     String      @db.ObjectId
+  nurseId      String      @db.ObjectId
+  hospitalId   String      @db.ObjectId
+  bedId        String      @unique @db.ObjectId
+  assignedBed  HospitalBed @relation(fields: [bedId], references: [id])
+  doctor       Doctor      @relation(fields: [doctorId], references: [id])
+  hospital     Hospital    @relation(fields: [hospitalId], references: [id])
+  nurse        Nurse       @relation(fields: [nurseId], references: [id])
+  assignedAt   DateTime    @default(now())
+  exitedAt     DateTime?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+}
+
+model HealthReport {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  report      String
+  nurseId     String   @db.ObjectId
+  patientId   String   @db.ObjectId
+  submittedBy Nurse    @relation(fields: [nurseId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Nurse {
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  phoneNumber   String
+  healthReports HealthReport[]
+  patients      Patient[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Doctor {
+  id             String     @id @default(auto()) @map("_id") @db.ObjectId
+  username       String
+  password       String
+  name           String
+  specialization String
+  email          String     @unique
+  phoneNumber    String
+  patients       Patient[]
+  hospitalIds    String[]   @db.ObjectId
+  hospitals      Hospital[] @relation(fields: [hospitalIds], references: [id])
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+model Hospital {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  location      String
+  phoneNumber   String
+  patients      Patient[]
+  beds          HospitalBed[]
+  doctorIds     String[]      @db.ObjectId
+  Doctor        Doctor[]      @relation(fields: [doctorIds], references: [id])
+  icuMachineIds String[]      @db.ObjectId
+  IcuMachines   IcuMachine[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+model HospitalBed {
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  roomNo       String
+  floorNo      Int
+  hospitalId   String      @db.ObjectId
+  hospital     Hospital    @relation(fields: [hospitalId], references: [id])
+  icuMachineId String?     
+  Patient      Patient?
+}
+
+model IcuMachine {
+  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  ecg          Int
+  sp02         Int
+  rr           Int
+  bt           Int
+  nibt         Int
+  hr           Int
+  icuMachineId String       
+  hospitalId   String       @db.ObjectId
+  hospitals    Hospital     @relation(fields: [hospitalId], references: [id])
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
