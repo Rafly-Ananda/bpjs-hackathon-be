@@ -4,12 +4,12 @@ import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
-
-// Dotenv
-require('dotenv').config();
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    // ENV
+    ConfigModule.forRoot({ isGlobal: true }),
     UsersModule,
     JwtModule.register({
       global: true,

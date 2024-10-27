@@ -9,9 +9,6 @@ import { Request } from 'express';
 import { IS_PUBLIC_KEY } from 'src/utils/constants/main';
 import { Reflector } from '@nestjs/core';
 
-// Dotenv
-require('dotenv').config();
-
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -24,16 +21,18 @@ export class AuthGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
+
     if (isPublic) {
-      // 💡 See this condition
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
+
     if (!token) {
       throw new UnauthorizedException();
     }
+
     try {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: process.env.JWT_SECRET,
@@ -44,6 +43,7 @@ export class AuthGuard implements CanActivate {
     } catch {
       throw new UnauthorizedException();
     }
+
     return true;
   }
 

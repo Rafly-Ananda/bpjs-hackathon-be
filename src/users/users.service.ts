@@ -1,10 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma, Doctor } from '@prisma/client';
+import { Prisma, Doctor, Patient } from '@prisma/client';
+import { PatientsService } from 'src/patients/patients.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private patientService: PatientsService,
+  ) {}
+
+  async assignedPatients(doctorId: string): Promise<Patient[] | []> {
+    return this.patientService.patients(doctorId);
+  }
 
   async user(
     userWhereUniqueInput: Prisma.DoctorWhereUniqueInput,

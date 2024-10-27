@@ -1,7 +1,7 @@
-import { Controller, Get, Logger, Post, Body } from '@nestjs/common';
+import { Controller, Logger } from '@nestjs/common';
 import { EventPattern, Payload, MqttContext, Ctx } from '@nestjs/microservices';
 import { IcuMachineService } from './icu-machine.service';
-import { IcuMachine } from '@prisma/client';
+import { IcuMachinePayload } from 'src/utils/type-definitions/MQTT.interface';
 
 @Controller('icu-machine')
 export class IcuMachineController {
@@ -10,23 +10,17 @@ export class IcuMachineController {
   private readonly logger = new Logger(IcuMachineController.name);
 
   // Listen to a specific MQTT topic
-  @EventPattern('#')
-  handleMqttMessage(@Payload() data: IcuMachine, @Ctx() context: MqttContext) {
+  @EventPattern('IcuTopic/#')
+  async handleMqttMessage(
+    @Payload() data: IcuMachinePayload,
+    @Ctx() context: MqttContext,
+  ) {
     const topic = context.getTopic();
     this.logger.log(`Received message on topic '${topic}'`);
 
-    // {
-    //     ecg: 83,
-    //     sp02: 84,
-    //     rr: 11,
-    //     bt: 43,
-    //     nibt: 91,
-    //     hr: 98,
-    //     idMesinIcu: 'eee4e813-e74d-40a8-95da-47dad2e1cb65'
-    //   }
+    // assumption, semua mesin yang ada di publish di topic ini, udh kedaftar di db
+    this.icuMachineService.savePatientIcuHistory(data);
 
-    console.log(data);
-
-    // return this.icuMachineService.insertMachineData(data);
+    this.logger.log(`Patient record saved '${topic}'`);
   }
 }

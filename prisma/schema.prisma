@@ -14,25 +14,25 @@ datasource db {
 }
 
 model Patient {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  name         String
-  age          Int
-  gender       String
-  email        String      @unique
-  phoneNumber  String
-  healthStatus String
-  doctorId     String      @db.ObjectId
-  nurseId      String      @db.ObjectId
-  hospitalId   String      @db.ObjectId
-  bedId        String      @unique @db.ObjectId
-  assignedBed  HospitalBed @relation(fields: [bedId], references: [id])
-  doctor       Doctor      @relation(fields: [doctorId], references: [id])
-  hospital     Hospital    @relation(fields: [hospitalId], references: [id])
-  nurse        Nurse       @relation(fields: [nurseId], references: [id])
-  assignedAt   DateTime    @default(now())
-  exitedAt     DateTime?
-  createdAt    DateTime    @default(now())
-  updatedAt    DateTime    @updatedAt
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  age           Int
+  gender        String
+  email         String      @unique
+  phoneNumber   String
+  healthStatus  String
+  doctorId      String      @db.ObjectId
+  nurseId       String      @db.ObjectId
+  hospitalId    String      @db.ObjectId
+  assignedBedId String      @unique @db.ObjectId
+  assignedBed   HospitalBed @relation(fields: [assignedBedId], references: [id])
+  doctor        Doctor      @relation(fields: [doctorId], references: [id])
+  hospital      Hospital    @relation(fields: [hospitalId], references: [id])
+  nurse         Nurse       @relation(fields: [nurseId], references: [id])
+  assignedAt    DateTime    @default(now())
+  exitedAt      DateTime?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
 }
 
 model HealthReport {
@@ -86,26 +86,44 @@ model Hospital {
 }
 
 model HospitalBed {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   roomNo       String
   floorNo      Int
-  hospitalId   String      @db.ObjectId
-  hospital     Hospital    @relation(fields: [hospitalId], references: [id])
-  icuMachineId String?     
+  status       String   @default("vacant") // occupied or vacant
+  hospitalId   String   @db.ObjectId
+  hospital     Hospital @relation(fields: [hospitalId], references: [id])
+  icuMachineId String?
   Patient      Patient?
 }
 
 model IcuMachine {
-  id           String       @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   ecg          Int
   sp02         Int
   rr           Int
   bt           Int
   nibt         Int
   hr           Int
-  icuMachineId String       
-  hospitalId   String       @db.ObjectId
-  hospitals    Hospital     @relation(fields: [hospitalId], references: [id])
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  icuMachineId String
+  hospitalId   String   @db.ObjectId
+  hospitals    Hospital @relation(fields: [hospitalId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PatientICUMedicalHistory {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  ecg           Int
+  sp02          Int
+  rr            Int
+  bt            Int
+  nibt          Int
+  hr            Int
+  hospitalId    String
+  assignedBedId String
+  icuMachineId  String
+  doctorId      String
+  patientId     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
