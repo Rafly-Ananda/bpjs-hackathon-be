@@ -9,24 +9,27 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersService = void 0;
+exports.DoctorsService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-const patients_service_1 = require("../patients/patients.service");
-let UsersService = class UsersService {
-    constructor(prisma, patientService) {
+const hospital_service_1 = require("../hospital/hospital.service");
+let DoctorsService = class DoctorsService {
+    constructor(prisma, hospitalService) {
         this.prisma = prisma;
-        this.patientService = patientService;
+        this.hospitalService = hospitalService;
     }
-    async assignedPatients(doctorId) {
-        return this.patientService.patients(doctorId);
+    async getAssignedPatients(doctorId) {
+        return this.hospitalService.getPatientsByHospital(doctorId);
     }
-    async user(userWhereUniqueInput) {
+    async getPatientsHistory(doctorId) {
+        return this.hospitalService.getPatientsHistoryByHospital(doctorId);
+    }
+    async getDoctor(doctorWhereUniqueInput) {
         return this.prisma.doctor.findUnique({
-            where: userWhereUniqueInput,
+            where: doctorWhereUniqueInput,
         });
     }
-    async users(params) {
+    async getDoctors(params) {
         const { skip, take, cursor, where, orderBy } = params;
         return this.prisma.doctor.findMany({
             skip,
@@ -36,28 +39,11 @@ let UsersService = class UsersService {
             orderBy,
         });
     }
-    async createUser(data) {
-        return this.prisma.doctor.create({
-            data,
-        });
-    }
-    async updateUser(params) {
-        const { where, data } = params;
-        return this.prisma.doctor.update({
-            data,
-            where,
-        });
-    }
-    async deleteUser(where) {
-        return this.prisma.doctor.delete({
-            where,
-        });
-    }
 };
-exports.UsersService = UsersService;
-exports.UsersService = UsersService = __decorate([
+exports.DoctorsService = DoctorsService;
+exports.DoctorsService = DoctorsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        patients_service_1.PatientsService])
-], UsersService);
-//# sourceMappingURL=users.service.js.map
+        hospital_service_1.HospitalService])
+], DoctorsService);
+//# sourceMappingURL=doctors.service.js.map

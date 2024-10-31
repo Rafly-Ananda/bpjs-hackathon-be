@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from '../users/users.module';
+import { DoctorsModule } from '../doctors/doctors.module';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
@@ -10,7 +10,7 @@ import { ConfigModule } from '@nestjs/config';
   imports: [
     // ENV
     ConfigModule.forRoot({ isGlobal: true }),
-    UsersModule,
+    DoctorsModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,

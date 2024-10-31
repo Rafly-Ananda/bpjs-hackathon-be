@@ -19,8 +19,8 @@ export class IcuMachineController {
     this.logger.log(`Received message on topic '${topic}'`);
 
     // assumption, semua mesin yang ada di publish di topic ini, udh kedaftar di db
-    this.icuMachineService.savePatientIcuHistory(data);
+    // this.icuMachineService.savePatientIcuHistory(data);
 
-    this.logger.log(`Patient record saved '${topic}'`);
+    // this.logger.log(`Patient record saved '${topic}'`);
   }
 }

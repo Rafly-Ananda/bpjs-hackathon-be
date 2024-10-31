@@ -12,12 +12,14 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const config_1 = require("@nestjs/config");
 const auth_module_1 = require("./auth/auth.module");
-const users_module_1 = require("./users/users.module");
+const doctors_module_1 = require("./doctors/doctors.module");
 const prisma_service_1 = require("./prisma/prisma.service");
 const prisma_module_1 = require("./prisma/prisma.module");
 const icu_machine_module_1 = require("./icu-machine/icu-machine.module");
 const patients_controller_1 = require("./patients/patients.controller");
 const patients_module_1 = require("./patients/patients.module");
+const hospital_controller_1 = require("./hospital/hospital.controller");
+const hospital_module_1 = require("./hospital/hospital.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,12 +28,13 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             auth_module_1.AuthModule,
-            users_module_1.UsersModule,
+            doctors_module_1.DoctorsModule,
             prisma_module_1.PrismaModule,
             icu_machine_module_1.IcuMachineModule,
             patients_module_1.PatientsModule,
+            hospital_module_1.HospitalModule,
         ],
-        controllers: [app_controller_1.AppController, patients_controller_1.PatientsController],
+        controllers: [app_controller_1.AppController, patients_controller_1.PatientsController, hospital_controller_1.HospitalController],
         providers: [app_service_1.AppService, prisma_service_1.PrismaService],
     })
 ], AppModule);

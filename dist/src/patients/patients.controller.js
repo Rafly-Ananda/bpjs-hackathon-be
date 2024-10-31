@@ -20,9 +20,13 @@ let PatientsController = class PatientsController {
     constructor(patientService) {
         this.patientService = patientService;
     }
-    findOne(params) {
+    getPatientDetail(params) {
         const { id } = params;
-        return this.patientService.patient(id);
+        return this.patientService.getPatientDetail(id);
+    }
+    getPatientICUDetail(params) {
+        const { id } = params;
+        return this.patientService.getPatientICUHistory(id);
     }
 };
 exports.PatientsController = PatientsController;
@@ -33,7 +37,15 @@ __decorate([
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
-], PatientsController.prototype, "findOne", null);
+], PatientsController.prototype, "getPatientDetail", null);
+__decorate([
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, common_1.Get)(':id/icu-history'),
+    __param(0, (0, common_1.Param)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PatientsController.prototype, "getPatientICUDetail", null);
 exports.PatientsController = PatientsController = __decorate([
     (0, common_1.Controller)('patients'),
     __metadata("design:paramtypes", [patients_service_1.PatientsService])

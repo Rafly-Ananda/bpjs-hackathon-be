@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Patient } from '@prisma/client';
+import { Patient, PatientICUMedicalHistory } from '@prisma/client';
 
 @Injectable()
 export class PatientsService {
   constructor(private prisma: PrismaService) {}
 
-  async patient(patientId: string): Promise<Patient | null> {
+  async getPatientDetail(patientId: string): Promise<Patient | null> {
     const patient = await this.prisma.patient.findFirst({
       where: {
         id: patientId,
@@ -66,7 +66,20 @@ export class PatientsService {
     return payload;
   }
 
-  async patients(doctorId: string): Promise<Patient[] | []> {
+  async getPatientICUHistory(
+    patientId: string,
+  ): Promise<PatientICUMedicalHistory[] | []> {
+    const patientICUHistory =
+      await this.prisma.patientICUMedicalHistory.findMany({
+        where: {
+          patientId: patientId,
+        },
+      });
+
+    return patientICUHistory;
+  }
+
+  async getPatients(doctorId: string): Promise<Patient[] | []> {
     const patients = await this.prisma.patient.findMany({
       where: {
         doctorId: doctorId,

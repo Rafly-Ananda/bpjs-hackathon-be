@@ -29,7 +29,7 @@ async function main() {
       specialization: 'Neurology',
       email: 'mary.smith@example.com',
       phoneNumber: '222-444-6666',
-      hospitalIds: [hospital.id], // Assign hospital ID as an array
+      hospitalIds: [hospital.id, hospital2.id], // Assign hospital ID as an array
     },
   });
 
@@ -60,6 +60,13 @@ async function main() {
     },
   });
 
+  const nurse3 = await prisma.nurse.create({
+    data: {
+      name: 'Nurse Eric',
+      phoneNumber: '981-11-9123',
+    },
+  });
+
   // Create a HospitalBed
   const hospitalBed = await prisma.hospitalBed.create({
     data: {
@@ -77,15 +84,25 @@ async function main() {
     },
   });
 
+  const hospitalBed3 = await prisma.hospitalBed.create({
+    data: {
+      roomNo: '211C',
+      floorNo: 2,
+      hospitalId: hospital2.id,
+    },
+  });
+
+  const hospitalBed4 = await prisma.hospitalBed.create({
+    data: {
+      roomNo: '231A',
+      floorNo: 2,
+      hospitalId: hospital2.id,
+    },
+  });
+
   // Create an IcuMachine
   const icuMachine = await prisma.icuMachine.create({
     data: {
-      ecg: 92,
-      sp02: 94,
-      rr: 20,
-      bt: 39,
-      nibt: 110,
-      hr: 88,
       icuMachineId: 'eee4e813-e74d-40a8-95da-47dad2e1cb65',
       hospitalId: hospital.id,
       createdAt: new Date(),
@@ -94,13 +111,23 @@ async function main() {
 
   const icuMachine2 = await prisma.icuMachine.create({
     data: {
-      ecg: 92,
-      sp02: 94,
-      rr: 20,
-      bt: 39,
-      nibt: 110,
-      hr: 88,
-      icuMachineId: 'fgh4e813-e74d-40a8-95da-47dad2e1cb75',
+      icuMachineId: 'a23c4fba-8fd6-4376-9068-06a9d48a2158',
+      hospitalId: hospital2.id,
+      createdAt: new Date(),
+    },
+  });
+
+  const icuMachine3 = await prisma.icuMachine.create({
+    data: {
+      icuMachineId: 'f62efbdb-ceb4-419a-abca-1f2a6eb3dc56',
+      hospitalId: hospital2.id,
+      createdAt: new Date(),
+    },
+  });
+
+  const icuMachine4 = await prisma.icuMachine.create({
+    data: {
+      icuMachineId: 'ddb432a5-1d20-4561-99c8-a96abd75d05f',
       hospitalId: hospital2.id,
       createdAt: new Date(),
     },
@@ -112,6 +139,7 @@ async function main() {
       id: hospitalBed.id,
     },
     data: {
+      status: 'occupied',
       icuMachineId: icuMachine.id,
     },
   });
@@ -122,7 +150,46 @@ async function main() {
       id: hospitalBed2.id,
     },
     data: {
+      status: 'occupied',
       icuMachineId: icuMachine2.id,
+    },
+  });
+
+  await prisma.hospitalBed.update({
+    where: {
+      id: hospitalBed3.id,
+    },
+    data: {
+      status: 'occupied',
+      icuMachineId: icuMachine3.id,
+    },
+  });
+
+  await prisma.hospitalBed.update({
+    where: {
+      id: hospitalBed4.id,
+    },
+    data: {
+      status: 'occupied',
+      icuMachineId: icuMachine4.id,
+    },
+  });
+
+  await prisma.hospital.update({
+    where: {
+      id: hospital.id,
+    },
+    data: {
+      doctorIds: [doctor.id],
+    },
+  });
+
+  await prisma.hospital.update({
+    where: {
+      id: hospital2.id,
+    },
+    data: {
+      doctorIds: [doctor.id, doctor2.id],
     },
   });
 
@@ -135,6 +202,7 @@ async function main() {
       email: 'bob.johnson@example.com',
       phoneNumber: '888-111-2222',
       healthStatus: 'Critical',
+      hasExited: false,
       doctorId: doctor.id,
       hospitalId: hospital.id,
       assignedBedId: hospitalBed.id,
@@ -151,10 +219,45 @@ async function main() {
       email: 'jack.durman@example.com',
       phoneNumber: '8123-111-2222',
       healthStatus: 'Stable',
+      hasExited: false,
       doctorId: doctor2.id,
       hospitalId: hospital2.id,
       assignedBedId: hospitalBed2.id,
       nurseId: nurse2.id,
+      assignedAt: new Date(),
+    },
+  });
+
+  const patient3 = await prisma.patient.create({
+    data: {
+      name: 'Dhana Renomi',
+      age: 25,
+      gender: 'Male',
+      email: 'dahana.renomi@example.com',
+      phoneNumber: '8123-111-2222',
+      healthStatus: 'Critical',
+      hasExited: false,
+      doctorId: doctor.id,
+      hospitalId: hospital2.id,
+      assignedBedId: hospitalBed3.id,
+      nurseId: nurse2.id,
+      assignedAt: new Date(),
+    },
+  });
+
+  const patient4 = await prisma.patient.create({
+    data: {
+      name: 'Kurniawan Gigih',
+      age: 69,
+      gender: 'Male',
+      email: 'gigih.kurniawan@example.com',
+      phoneNumber: '321-444-1233',
+      healthStatus: 'Stable',
+      hasExited: false,
+      doctorId: doctor.id,
+      hospitalId: hospital2.id,
+      assignedBedId: hospitalBed4.id,
+      nurseId: nurse3.id,
       assignedAt: new Date(),
     },
   });
@@ -175,6 +278,24 @@ async function main() {
         'Patient showing signs of improvement, but still under observation.',
       nurseId: nurse2.id, // Direct assignment of nurseId
       patientId: patient2.id,
+      createdAt: new Date(),
+    },
+  });
+
+  await prisma.healthReport.create({
+    data: {
+      report: 'Patient probably will enter critical condition any minute now.',
+      nurseId: nurse2.id, // Direct assignment of nurseId
+      patientId: patient3.id,
+      createdAt: new Date(),
+    },
+  });
+
+  await prisma.healthReport.create({
+    data: {
+      report: 'Heartbeat is normalizing, conducting furhter analysis.',
+      nurseId: nurse3.id, // Direct assignment of nurseId
+      patientId: patient4.id,
       createdAt: new Date(),
     },
   });

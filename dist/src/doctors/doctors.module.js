@@ -6,21 +6,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersModule = void 0;
+exports.DoctorsModule = void 0;
 const common_1 = require("@nestjs/common");
-const users_service_1 = require("./users.service");
+const doctors_service_1 = require("./doctors.service");
 const prisma_service_1 = require("../prisma/prisma.service");
-const users_controller_1 = require("./users.controller");
+const doctors_controller_1 = require("./doctors.controller");
 const patients_module_1 = require("../patients/patients.module");
-let UsersModule = class UsersModule {
+const hospital_module_1 = require("../hospital/hospital.module");
+let DoctorsModule = class DoctorsModule {
 };
-exports.UsersModule = UsersModule;
-exports.UsersModule = UsersModule = __decorate([
+exports.DoctorsModule = DoctorsModule;
+exports.DoctorsModule = DoctorsModule = __decorate([
     (0, common_1.Module)({
-        imports: [patients_module_1.PatientsModule],
-        providers: [users_service_1.UsersService, prisma_service_1.PrismaService],
-        exports: [users_service_1.UsersService],
-        controllers: [users_controller_1.UsersController],
+        imports: [patients_module_1.PatientsModule, hospital_module_1.HospitalModule],
+        providers: [doctors_service_1.DoctorsService, prisma_service_1.PrismaService],
+        exports: [doctors_service_1.DoctorsService],
+        controllers: [doctors_controller_1.DoctorsController],
     })
-], UsersModule);
-//# sourceMappingURL=users.module.js.map
+], DoctorsModule);
+//# sourceMappingURL=doctors.module.js.map

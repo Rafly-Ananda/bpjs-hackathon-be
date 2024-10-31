@@ -54,7 +54,7 @@ let IcuMachineService = IcuMachineService_1 = class IcuMachineService {
             },
         });
         if (hospitalBed.status === 'vacant') {
-            this.logger.debug(`Bed status is vacantt, exhausting record.`);
+            this.logger.debug(`Bed status is vacant, exhausting record.`);
             return;
         }
         const patient = await this.prisma.patient.findFirst({
@@ -84,7 +84,7 @@ let IcuMachineService = IcuMachineService_1 = class IcuMachineService {
                 },
             },
         });
-        if (patient.exitedAt !== null) {
+        if (patient.hasExited) {
             this.logger.error(`Patient with id ${patient.id} already left the ICU, exhausting record.`);
             return;
         }
@@ -95,9 +95,10 @@ let IcuMachineService = IcuMachineService_1 = class IcuMachineService {
             sp02: payload.sp02,
             rr: payload.rr,
             bt: payload.bt,
-            nibt: payload.nibt,
+            systolic: payload.systolic,
+            diastolic: payload.diastolic,
+            nipb: payload.nipb,
             hr: payload.hr,
-            ...patient,
         };
         this.publishMessage(`IcuTopicEnriched/${patient.id}`, enrichedPayload);
         this.logger.debug(`Enriched record published for bed ${hospitalBed.id}`);

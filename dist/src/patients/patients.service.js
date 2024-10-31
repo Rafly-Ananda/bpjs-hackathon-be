@@ -16,7 +16,7 @@ let PatientsService = class PatientsService {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async patient(patientId) {
+    async getPatientDetail(patientId) {
         const patient = await this.prisma.patient.findFirst({
             where: {
                 id: patientId,
@@ -70,7 +70,15 @@ let PatientsService = class PatientsService {
         };
         return payload;
     }
-    async patients(doctorId) {
+    async getPatientICUHistory(patientId) {
+        const patientICUHistory = await this.prisma.patientICUMedicalHistory.findMany({
+            where: {
+                patientId: patientId,
+            },
+        });
+        return patientICUHistory;
+    }
+    async getPatients(doctorId) {
         const patients = await this.prisma.patient.findMany({
             where: {
                 doctorId: doctorId,

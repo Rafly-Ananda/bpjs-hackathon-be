@@ -2,7 +2,10 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { PatientICUMedicalHistory } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { IcuMachinePayload } from 'src/utils/type-definitions/MQTT.interface';
+import {
+  IcuMachinePayload,
+  EnrichedIcuMachinePayload,
+} from 'src/utils/type-definitions/MQTT.interface';
 
 @Injectable()
 export class IcuMachineService {
@@ -55,7 +58,7 @@ export class IcuMachineService {
 
     // ? 2nd Guard clause if patient already checked out.
     if (hospitalBed.status === 'vacant') {
-      this.logger.debug(`Bed status is vacantt, exhausting record.`);
+      this.logger.debug(`Bed status is vacant, exhausting record.`);
       return;
     }
 
@@ -89,7 +92,7 @@ export class IcuMachineService {
     });
 
     // ? 3rd Guard Clause if Patient ALready Exited ICU
-    if (patient.exitedAt !== null) {
+    if (patient.hasExited) {
       this.logger.error(
         `Patient with id ${patient.id} already left the ICU, exhausting record.`,
       );
@@ -99,37 +102,40 @@ export class IcuMachineService {
     delete patient.createdAt;
     delete patient.updatedAt;
 
-    const enrichedPayload = {
+    const enrichedPayload: EnrichedIcuMachinePayload = {
       ecg: payload.ecg,
       sp02: payload.sp02,
       rr: payload.rr,
       bt: payload.bt,
-      nibt: payload.nibt,
+      systolic: payload.systolic,
+      diastolic: payload.diastolic,
+      nipb: payload.nipb,
       hr: payload.hr,
-      ...patient,
     };
 
     // ? 4th Publish Enriched payload
     this.publishMessage(`IcuTopicEnriched/${patient.id}`, enrichedPayload);
 
-    this.logger.debug(`Enriched record published for bed ${hospitalBed.id}`);
-
     // !! TURN THIS ON IN PROD
-    // return this.prisma.patientICUMedicalHistory.create({
+    // this.prisma.patientICUMedicalHistory.create({
     //   data: {
     //     ecg: payload.ecg,
     //     sp02: payload.sp02,
     //     rr: payload.rr,
     //     bt: payload.bt,
-    //     nibt: payload.nibt,
+    //     systolic: payload.systolic,
+    //     diastolic: payload.diastolic,
+    //     nipb: payload.nipb,
     //     hr: payload.hr,
     //     hospitalId: hospitalBed.hospital.id,
     //     assignedBedId: hospitalBed.id,
     //     icuMachineId: icuMacine.id,
     //     doctorId: patient.doctorId,
     //     patientId: patient.id,
-    //   }
-    // })
+    //   },
+    // });
+
+    this.logger.debug(`Enriched record published for bed ${hospitalBed.id}`);
 
     return;
   }

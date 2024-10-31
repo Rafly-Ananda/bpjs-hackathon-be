@@ -22,6 +22,8 @@ let AuthController = class AuthController {
         this.authService = authService;
     }
     signIn(signInDto) {
+        console.log('xoxos');
+        console.log(signInDto);
         return this.authService.signIn(signInDto.email, signInDto.password);
     }
     getProfile(req) {

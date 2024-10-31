@@ -30,7 +30,8 @@ model Patient {
   hospital      Hospital    @relation(fields: [hospitalId], references: [id])
   nurse         Nurse       @relation(fields: [nurseId], references: [id])
   assignedAt    DateTime    @default(now())
-  exitedAt      DateTime?
+  hasExited     Boolean     @default(false)
+  exitedAt      DateTime?   
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -98,12 +99,6 @@ model HospitalBed {
 
 model IcuMachine {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  ecg          Int
-  sp02         Int
-  rr           Int
-  bt           Int
-  nibt         Int
-  hr           Int
   icuMachineId String
   hospitalId   String   @db.ObjectId
   hospitals    Hospital @relation(fields: [hospitalId], references: [id])
@@ -113,11 +108,13 @@ model IcuMachine {
 
 model PatientICUMedicalHistory {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  ecg           Int
+  ecg           Float
   sp02          Int
   rr            Int
-  bt            Int
-  nibt          Int
+  bt            Float
+  systolic      Int
+  diastolic     Int
+  nipb          String
   hr            Int
   hospitalId    String
   assignedBedId String
