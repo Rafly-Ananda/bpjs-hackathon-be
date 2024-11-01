@@ -24,7 +24,7 @@ let IcuMachineController = IcuMachineController_1 = class IcuMachineController {
     }
     async handleMqttMessage(data, context) {
         const topic = context.getTopic();
-        this.logger.log(`Received message on topic '${topic}'`);
+        this.icuMachineService.savePatientIcuHistory(data);
     }
 };
 exports.IcuMachineController = IcuMachineController;

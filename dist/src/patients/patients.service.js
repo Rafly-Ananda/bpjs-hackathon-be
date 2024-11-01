@@ -52,6 +52,9 @@ let PatientsService = class PatientsService {
                 report: true,
                 submittedBy: true,
             },
+            orderBy: {
+                createdAt: 'desc',
+            },
         });
         const icuMachineHardwareId = await this.prisma.icuMachine.findFirst({
             where: {
@@ -112,6 +115,15 @@ let PatientsService = class PatientsService {
             return e;
         });
         return sanitized;
+    }
+    async createHealthReport(patientId, nurseId, report) {
+        return this.prisma.healthReport.create({
+            data: {
+                patientId: patientId,
+                nurseId: nurseId,
+                report: report,
+            },
+        });
     }
 };
 exports.PatientsService = PatientsService;

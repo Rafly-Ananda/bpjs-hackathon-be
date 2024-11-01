@@ -28,6 +28,10 @@ let PatientsController = class PatientsController {
         const { id } = params;
         return this.patientService.getPatientICUHistory(id);
     }
+    createHealthReport(params, healthReportDto) {
+        const { id: patientId } = params;
+        return this.patientService.createHealthReport(patientId, healthReportDto.nurseId, healthReportDto.report);
+    }
 };
 exports.PatientsController = PatientsController;
 __decorate([
@@ -46,6 +50,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PatientsController.prototype, "getPatientICUDetail", null);
+__decorate([
+    (0, common_1.Post)(':id/health-report'),
+    __param(0, (0, common_1.Param)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], PatientsController.prototype, "createHealthReport", null);
 exports.PatientsController = PatientsController = __decorate([
     (0, common_1.Controller)('patients'),
     __metadata("design:paramtypes", [patients_service_1.PatientsService])

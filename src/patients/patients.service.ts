@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Patient, PatientICUMedicalHistory } from '@prisma/client';
+import {
+  Patient,
+  PatientICUMedicalHistory,
+  HealthReport,
+} from '@prisma/client';
 
 @Injectable()
 export class PatientsService {
@@ -42,6 +46,9 @@ export class PatientsService {
       select: {
         report: true,
         submittedBy: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
@@ -116,5 +123,19 @@ export class PatientsService {
     });
 
     return sanitized;
+  }
+
+  async createHealthReport(
+    patientId: string,
+    nurseId: string,
+    report: string,
+  ): Promise<HealthReport> {
+    return this.prisma.healthReport.create({
+      data: {
+        patientId: patientId,
+        nurseId: nurseId,
+        report: report,
+      },
+    });
   }
 }

@@ -101,7 +101,6 @@ let IcuMachineService = IcuMachineService_1 = class IcuMachineService {
             hr: payload.hr,
         };
         this.publishMessage(`IcuTopicEnriched/${patient.id}`, enrichedPayload);
-        this.logger.debug(`Enriched record published for bed ${hospitalBed.id}`);
         return;
     }
     publishMessage(topic, message) {

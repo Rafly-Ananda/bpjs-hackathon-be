@@ -1,7 +1,11 @@
 import { AuthGuard } from 'src/auth/auth.guard';
 import { PatientsService } from './patients.service';
-import { Get, Param, Controller, UseGuards } from '@nestjs/common';
-import { Patient, PatientICUMedicalHistory } from '@prisma/client';
+import { Get, Param, Controller, UseGuards, Post, Body } from '@nestjs/common';
+import {
+  Patient,
+  PatientICUMedicalHistory,
+  HealthReport,
+} from '@prisma/client';
 
 @Controller('patients')
 export class PatientsController {
@@ -21,5 +25,19 @@ export class PatientsController {
   ): Promise<PatientICUMedicalHistory[] | []> {
     const { id } = params;
     return this.patientService.getPatientICUHistory(id);
+  }
+
+  @Post(':id/health-report')
+  createHealthReport(
+    @Param() params: { id: string },
+    @Body() healthReportDto: Record<string, any>,
+  ) {
+    const { id: patientId } = params;
+
+    return this.patientService.createHealthReport(
+      patientId,
+      healthReportDto.nurseId,
+      healthReportDto.report,
+    );
   }
 }

@@ -117,25 +117,29 @@ export class IcuMachineService {
     this.publishMessage(`IcuTopicEnriched/${patient.id}`, enrichedPayload);
 
     // !! TURN THIS ON IN PROD
-    // this.prisma.patientICUMedicalHistory.create({
-    //   data: {
-    //     ecg: payload.ecg,
-    //     sp02: payload.sp02,
-    //     rr: payload.rr,
-    //     bt: payload.bt,
-    //     systolic: payload.systolic,
-    //     diastolic: payload.diastolic,
-    //     nipb: payload.nipb,
-    //     hr: payload.hr,
-    //     hospitalId: hospitalBed.hospital.id,
-    //     assignedBedId: hospitalBed.id,
-    //     icuMachineId: icuMacine.id,
-    //     doctorId: patient.doctorId,
-    //     patientId: patient.id,
-    //   },
-    // });
+    // try {
+    //   await this.prisma.patientICUMedicalHistory.create({
+    //     data: {
+    //       ecg: payload.ecg,
+    //       sp02: payload.sp02,
+    //       rr: payload.rr,
+    //       bt: payload.bt,
+    //       systolic: payload.systolic,
+    //       diastolic: payload.diastolic,
+    //       nipb: payload.nipb,
+    //       hr: payload.hr,
+    //       hospitalId: hospitalBed.hospital.id,
+    //       assignedBedId: hospitalBed.id,
+    //       icuMachineId: icuMacine.id,
+    //       doctorId: patient.doctorId,
+    //       patientId: patient.id,
+    //     },
+    //   });
+    // } catch (e) {
+    //   console.log(e);
+    // }
 
-    this.logger.debug(`Enriched record published for bed ${hospitalBed.id}`);
+    // this.logger.debug(`Enriched record published for bed ${hospitalBed.id}`);
 
     return;
   }
