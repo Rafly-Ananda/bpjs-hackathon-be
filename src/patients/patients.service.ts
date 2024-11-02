@@ -138,4 +138,16 @@ export class PatientsService {
       },
     });
   }
+
+  async mockJKNResult(): Promise<Patient[] | []> {
+    return this.prisma.patient.findMany({
+      where: {
+        hasExited: false,
+      },
+      take: 2,
+      orderBy: {
+        createdAt: 'asc',
+      },
+    });
+  }
 }

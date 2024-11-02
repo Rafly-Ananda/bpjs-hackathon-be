@@ -16,9 +16,7 @@ export class IcuMachineService {
     private prisma: PrismaService,
   ) {}
 
-  async savePatientIcuHistory(
-    payload: IcuMachinePayload,
-  ): Promise<PatientICUMedicalHistory | void> {
+  async savePatientIcuHistory(payload: IcuMachinePayload): Promise<void> {
     // ? 1st Find Corresponding Registered machine
     const icuMacine = await this.prisma.icuMachine.findFirst({
       where: {
@@ -58,7 +56,7 @@ export class IcuMachineService {
 
     // ? 2nd Guard clause if patient already checked out.
     if (hospitalBed.status === 'vacant') {
-      this.logger.debug(`Bed status is vacant, exhausting record.`);
+      this.logger.error(`Bed status is vacant, exhausting record.`);
       return;
     }
 

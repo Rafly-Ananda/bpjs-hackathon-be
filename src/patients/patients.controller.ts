@@ -40,4 +40,10 @@ export class PatientsController {
       healthReportDto.report,
     );
   }
+
+  @UseGuards(AuthGuard)
+  @Get('jkn/mock')
+  mockJKNResult(): Promise<Patient[] | []> {
+    return this.patientService.mockJKNResult();
+  }
 }
