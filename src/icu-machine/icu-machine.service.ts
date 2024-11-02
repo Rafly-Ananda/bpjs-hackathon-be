@@ -29,7 +29,7 @@ export class IcuMachineService {
 
     // ? 1st Guard clause if machine not registered
     if (icuMacine === null) {
-      this.logger.error(
+      this.logger.debug(
         `Machine with hardware id ${payload.idMesinIcu} is not registered, exhausting record.`,
       );
       return;
@@ -56,7 +56,7 @@ export class IcuMachineService {
 
     // ? 2nd Guard clause if patient already checked out.
     if (hospitalBed.status === 'vacant') {
-      this.logger.error(`Bed status is vacant, exhausting record.`);
+      this.logger.debug(`Bed status is vacant, exhausting record.`);
       return;
     }
 
@@ -91,7 +91,7 @@ export class IcuMachineService {
 
     // ? 3rd Guard Clause if Patient ALready Exited ICU
     if (patient.hasExited) {
-      this.logger.error(
+      this.logger.debug(
         `Patient with id ${patient.id} already left the ICU, exhausting record.`,
       );
       return;

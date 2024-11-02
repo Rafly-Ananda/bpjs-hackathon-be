@@ -13,15 +13,40 @@ exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
 const doctors_service_1 = require("../doctors/doctors.service");
 const jwt_1 = require("@nestjs/jwt");
+const prisma_service_1 = require("../prisma/prisma.service");
 let AuthService = class AuthService {
-    constructor(doctorsService, jwtService) {
+    constructor(doctorsService, jwtService, prisma) {
         this.doctorsService = doctorsService;
         this.jwtService = jwtService;
+        this.prisma = prisma;
     }
-    async signIn(email, pass) {
+    async signIn(email, pass, fcmToken) {
         const user = await this.doctorsService.getDoctor({ email });
         if (user?.password !== pass) {
             throw new common_1.UnauthorizedException();
+        }
+        const registeredDevice = await this.prisma.registeredDevice.findFirst({
+            where: {
+                doctorId: user.id,
+            },
+        });
+        if (!registeredDevice) {
+            await this.prisma.registeredDevice.create({
+                data: {
+                    fcm_token: fcmToken,
+                    doctorId: user.id,
+                },
+            });
+        }
+        else {
+            await this.prisma.registeredDevice.update({
+                where: {
+                    doctorId: user.id,
+                },
+                data: {
+                    fcm_token: fcmToken,
+                },
+            });
         }
         const payload = {
             sub: user.id,
@@ -37,6 +62,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [doctors_service_1.DoctorsService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        prisma_service_1.PrismaService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

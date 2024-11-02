@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { ConfigModule } from '@nestjs/config';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Module({
   imports: [
@@ -18,7 +19,11 @@ import { ConfigModule } from '@nestjs/config';
     }),
   ],
   // ? below option is added if we want all path inside of a module to be guarded
-  providers: [AuthService, { provide: 'APP_GUARD', useClass: AuthGuard }],
+  providers: [
+    AuthService,
+    { provide: 'APP_GUARD', useClass: AuthGuard },
+    PrismaService,
+  ],
   controllers: [AuthController],
   exports: [AuthService],
 })

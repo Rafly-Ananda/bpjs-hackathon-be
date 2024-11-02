@@ -33,7 +33,7 @@ let IcuMachineService = IcuMachineService_1 = class IcuMachineService {
             },
         });
         if (icuMacine === null) {
-            this.logger.error(`Machine with hardware id ${payload.idMesinIcu} is not registered, exhausting record.`);
+            this.logger.debug(`Machine with hardware id ${payload.idMesinIcu} is not registered, exhausting record.`);
             return;
         }
         const hospitalBed = await this.prisma.hospitalBed.findFirst({
@@ -54,7 +54,7 @@ let IcuMachineService = IcuMachineService_1 = class IcuMachineService {
             },
         });
         if (hospitalBed.status === 'vacant') {
-            this.logger.error(`Bed status is vacant, exhausting record.`);
+            this.logger.debug(`Bed status is vacant, exhausting record.`);
             return;
         }
         const patient = await this.prisma.patient.findFirst({
@@ -85,7 +85,7 @@ let IcuMachineService = IcuMachineService_1 = class IcuMachineService {
             },
         });
         if (patient.hasExited) {
-            this.logger.error(`Patient with id ${patient.id} already left the ICU, exhausting record.`);
+            this.logger.debug(`Patient with id ${patient.id} already left the ICU, exhausting record.`);
             return;
         }
         delete patient.createdAt;

@@ -31,7 +31,7 @@ model Patient {
   nurse         Nurse       @relation(fields: [nurseId], references: [id])
   assignedAt    DateTime    @default(now())
   hasExited     Boolean     @default(false)
-  exitedAt      DateTime?   
+  exitedAt      DateTime?
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt
 }
@@ -57,18 +57,28 @@ model Nurse {
 }
 
 model Doctor {
-  id             String     @id @default(auto()) @map("_id") @db.ObjectId
-  username       String
-  password       String
-  name           String
-  specialization String
-  email          String     @unique
-  phoneNumber    String
-  patients       Patient[]
-  hospitalIds    String[]   @db.ObjectId
-  hospitals      Hospital[] @relation(fields: [hospitalIds], references: [id])
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  id               String            @id @default(auto()) @map("_id") @db.ObjectId
+  username         String
+  password         String
+  name             String
+  specialization   String
+  email            String            @unique
+  phoneNumber      String
+  patients         Patient[]
+  hospitalIds      String[]          @db.ObjectId
+  hospitals        Hospital[]        @relation(fields: [hospitalIds], references: [id])
+  registeredDevice RegisteredDevice?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model RegisteredDevice {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  doctorId  String   @unique @db.ObjectId
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  fcm_token String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Hospital {
